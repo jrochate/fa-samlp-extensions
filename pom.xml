@@ -1,1 +1,102 @@
 <!--Project Object Model: information about the project and configuration details-->
+<!-- fa-samlp-extensions/pom.xml -->
+<project xmlns="http://maven.apache.org/POM/4.0.0"
+         xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+         xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 https://maven.apache.org/xsd/maven-4.0.0.xsd">
+
+  <modelVersion>4.0.0</modelVersion>
+
+  <!-- You can use pt.adj3 or pt.adj3.keycloak as groupId; keeping it simple -->
+  <groupId>pt.adj3.keycloak</groupId>
+  <artifactId>fa-samlp-extensions</artifactId>
+  <version>1.0.0</version>
+  <packaging>jar</packaging>
+
+  <name>Fornecedor de Autenticacao SAML Extensions</name>
+  <description>Keycloak SAML AuthnRequest for Autenticação.gov (Cartão de Cidadão)</description>
+  <url>https://github.com/adj3/fa-samlp-extensions</url>
+
+  <licenses>
+    <license>
+      <name>Apache License, Version 2.0</name>
+      <url>https://www.apache.org/licenses/LICENSE-2.0</url>
+      <distribution>repo</distribution>
+    </license>
+  </licenses>
+
+  <properties>
+    <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
+    <maven.compiler.release>17</maven.compiler.release>
+    <keycloak.version>26.3.1</keycloak.version>
+  </properties>
+
+  <dependencies>
+    <!-- Keycloak SPIs / services (provided by the running server) -->
+    <dependency>
+      <groupId>org.keycloak</groupId>
+      <artifactId>keycloak-server-spi</artifactId>
+      <version>${keycloak.version}</version>
+      <scope>provided</scope>
+    </dependency>
+    <dependency>
+      <groupId>org.keycloak</groupId>
+      <artifactId>keycloak-server-spi-private</artifactId>
+      <version>${keycloak.version}</version>
+      <scope>provided</scope>
+    </dependency>
+    <dependency>
+      <groupId>org.keycloak</groupId>
+      <artifactId>keycloak-services</artifactId>
+      <version>${keycloak.version}</version>
+      <scope>provided</scope>
+    </dependency>
+
+    <!-- SAML DOM / protocol utilities (DocumentUtil, writers, etc.) -->
+    <dependency>
+      <groupId>org.keycloak</groupId>
+      <artifactId>keycloak-saml-core</artifactId>
+      <version>${keycloak.version}</version>
+      <scope>provided</scope>
+    </dependency>
+  </dependencies>
+
+  <build>
+    <plugins>
+      <!-- Compile against Java 17 -->
+      <plugin>
+        <groupId>org.apache.maven.plugins</groupId>
+        <artifactId>maven-compiler-plugin</artifactId>
+        <version>3.13.0</version>
+        <configuration>
+          <release>${maven.compiler.release}</release>
+        </configuration>
+      </plugin>
+
+      <!-- Put clear metadata in the JAR manifest -->
+      <plugin>
+        <groupId>org.apache.maven.plugins</groupId>
+        <artifactId>maven-jar-plugin</artifactId>
+        <version>3.3.0</version>
+        <configuration>
+          <archive>
+            <manifestEntries>
+              <Implementation-Title>fa-samlp-extensions</Implementation-Title>
+              <Implementation-Version>${project.version}</Implementation-Version>
+              <!-- Optional but nice to have for JPMS tooling: -->
+              <Automatic-Module-Name>pt.adj3.keycloak.idp</Automatic-Module-Name>
+            </manifestEntries>
+          </archive>
+        </configuration>
+      </plugin>
+    </plugins>
+  </build>
+
+  <!-- Optional: basic SCM metadata (helps when publishing to GitHub Packages, etc.) -->
+  <scm>
+    <url>https://github.com/adj3/fa-samlp-extensions</url>
+    <connection>scm:git:https://github.com/adj3/fa-samlp-extensions.git</connection>
+    <developerConnection>scm:git:ssh://git@github.com/adj3/fa-samlp-extensions.git</developerConnection>
+    <tag>HEAD</tag>
+  </scm>
+
+</project>

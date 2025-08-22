@@ -1,0 +1,24 @@
+# Build the provider JAR with JDK 17 + Maven
+FROM maven:3.9.9-eclipse-temurin-17 AS build
+WORKDIR /workspace
+
+# Prime deps (faster subsequent builds)
+COPY pom.xml .
+RUN mvn -q -DskipTests dependency:go-offline
+
+# Compile/package
+COPY src ./src
+RUN mvn -q -DskipTests package
+
+# Put the artifact at a predictable path
+RUN set -eux; \
+    ls -l target; \
+    JAR="$(ls target/*.jar | head -n1)"; \
+    echo "Built artifact: $JAR"; \
+    mkdir -p /out; \
+    cp "$JAR" /out/fa-samlp-extensions.jar
+
+# Export stage
+FROM alpine:3.20 AS out
+WORKDIR /out
+COPY --from=build /out/fa-samlp-extensions.jar /out/fa-samlp-extensions.jar
